@@ -46,55 +46,6 @@ st.subheader("System Status:")
 st.write(system_status)
 st.write(f"**What this setting does:** {system_info}")
 
-# Animation settings (fixed settings for demonstration)
-iterations = 16  # Level of detail for fractal
-separation = 0.7885  # Separation factor for animation
-
-# Create progress bar and placeholders for animation
-progress_bar = st.sidebar.progress(0)
-frame_text = st.sidebar.empty()
-image = st.empty()
-
-
-# Fractal animation function
-def generate_fractal(iterations, separation, frame_num, m=960, n=640, s=400):
-    x = np.linspace(-m / s, m / s, num=m).reshape((1, m))
-    y = np.linspace(-n / s, n / s, num=n).reshape((n, 1))
-    a = frame_num * 0.1
-    c = separation * np.exp(1j * a)
-    Z = np.tile(x, (n, 1)) + 1j * np.tile(y, (1, m))
-    C = np.full((n, m), c)
-    M = np.full((n, m), True, dtype=bool)
-    N = np.zeros((n, m))
-    for i in range(iterations):
-        Z[M] = Z[M] * Z[M] + C[M]
-        M[np.abs(Z) > 2] = False
-        N[M] = i
-    return 1.0 - (N / N.max())
-
-
-# Animation loop with original color scheme
-for frame_num in range(100):
-    fractal_image = generate_fractal(iterations, separation, frame_num)
-
-    # Display the fractal image without a specific color map for a classic look
-    fig, ax = plt.subplots()
-    ax.imshow(fractal_image, cmap='gray', interpolation='none')  # Original grayscale color map
-    ax.axis('off')  # Hide the axes for a clean look
-    image.pyplot(fig, use_container_width=True)
-
-    # Update progress and frame text
-    frame_text.text(f"Frame {frame_num + 1}/100")
-    progress_bar.progress(frame_num + 1)
-    time.sleep(0.05)  # Delay for animation speed
-
-# Clear the progress bar and frame text after animation
-progress_bar.empty()
-frame_text.empty()
-
-# Rerun button
-st.button("Rerun")
-
 
 
 
